@@ -1,0 +1,76 @@
+<?php
+
+/**
+ * @file
+ * Module that allows to set up an API key and return page nodes as JSON.
+ */
+
+/**
+ * Implements hook_form_FORMID_alter().
+ */
+function axe_form_system_site_information_settings_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+  $axe_config = Drupal::config('axe.site');
+
+  $form['site_key'] = [
+    '#type' => 'details',
+    '#title' => t('Site API key'),
+    '#open' => TRUE,
+  ];
+
+  $form['site_key']['siteapikey'] = [
+    '#type' => 'textfield',
+    '#title' => t('API key'),
+    '#default_value' => $axe_config->get('siteapikey'),
+    '#description' => t('Provide an API key. It must be 12 characters long and contain only numbers and ANSI alphanumeric characters.'),
+    '#required' => FALSE,
+  ];
+
+  $form['#validate'][] = 'axe_system_site_information_settings_siteapikey_validate';
+
+  $form['#submit'][] = 'axe_system_site_information_settings_siteapikey_submit';
+
+  // Change the label of submit button. Ideally this should consider ANY change
+  // in the settings variables, not just this module.
+  if (!empty($axe_config->get('siteapikey'))) {
+    $form['actions']['submit']['#value'] = t('Update configuration');
+  }
+}
+
+/**
+ * Form validate callback for the siteapikey variable.
+ *
+ * Generic validation callback as a placeholder for key customization.
+ *
+ * @param array $form
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ */
+function axe_system_site_information_settings_siteapikey_validate(array &$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+  $apikey = $form_state->getValue('siteapikey');
+
+  // Possibly worth revising as preg_match returns 0 if no match
+  // and false if error.
+  if (!preg_match('/^[A-Za-z0-9]{12}$/', $apikey)) {
+    $form_state->setErrorByName('siteapikey', t('The API key provided is not valid.'));
+  }
+}
+
+/**
+ * Form submit callback to save the siteapikey variable.
+ *
+ * @param array $form
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ */
+function axe_system_site_information_settings_siteapikey_submit(array &$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+  $config = Drupal::configFactory()->getEditable('axe.site');
+  $siteapikey_value = $form_state->getValue('siteapikey');
+  $config->set('siteapikey', $siteapikey_value)->save();
+
+  // Use a different message if the variable is set or unset.
+  if (empty($siteapikey_value)) {
+    drupal_set_message(t('The Site API key was deleted.'), 'warning');
+  }
+  else {
+    drupal_set_message(t('The Site API key was saved as :key.', [':key' => $siteapikey_value]), 'status');
+  }
+
+}

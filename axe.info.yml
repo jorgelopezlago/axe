@@ -1,0 +1,6 @@
+name: Axelerant test module
+description: Custom module that returns JSON for nodes if the correct key is provided.
+type: module
+core: 8.x
+dependencies:
+  - serialization

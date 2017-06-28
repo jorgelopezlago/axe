@@ -1,0 +1,8 @@
+axe.page_get:
+  path: '/page_json/{key}/{nid}'
+  defaults:
+    _controller: '\Drupal\axe\Controller\AxeController::getJson'
+  methods:  [GET]
+  requirements:
+    _access: 'TRUE'
+  no-cache: 'TRUE'
