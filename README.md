@@ -3,6 +3,7 @@
 *Time taken:* 4h 43min
 
 *Resources:*
+- Drupal 8 Development Cookbook (ed Packt)
 - https://www.drupal.org/docs/8
 - https://api.drupal.org/api/drupal
 - https://drupal.stackexchange.com
