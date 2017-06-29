@@ -1,4 +1,4 @@
-**Test module for Axelerant**
+**Drupal 8 test module**
 
 *Time taken:* 4h 43min
 
